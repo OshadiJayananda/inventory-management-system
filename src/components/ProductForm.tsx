@@ -4,6 +4,7 @@ import type { Product } from "../utils/types";
 
 type ProductFormProps = {
   onAddProduct: (product: Product) => void;
+  onCancel: () => void;
 };
 
 type ProductFormValues = {
@@ -42,7 +43,7 @@ const validationSchema = Yup.object({
     .required("Stock quantity is required"),
 });
 
-const ProductForm = ({ onAddProduct }: ProductFormProps) => {
+const ProductForm = ({ onAddProduct, onCancel }: ProductFormProps) => {
   return (
     <Formik
       initialValues={initialValues}
@@ -122,6 +123,9 @@ const ProductForm = ({ onAddProduct }: ProductFormProps) => {
         </div>
 
         <button type="submit">Save Product</button>
+        <button type="button" onClick={onCancel}>
+          Cancel
+        </button>
       </Form>
     </Formik>
   );
