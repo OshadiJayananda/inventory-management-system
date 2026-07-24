@@ -1,5 +1,10 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import type { Product } from "../utils/types";
+
+type ProductFormProps = {
+  onAddProduct: (product: Product) => void;
+};
 
 type ProductFormValues = {
   name: string;
@@ -37,13 +42,22 @@ const validationSchema = Yup.object({
     .required("Stock quantity is required"),
 });
 
-const ProductForm = () => {
+const ProductForm = ({ onAddProduct }: ProductFormProps) => {
   return (
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
       onSubmit={(values) => {
-        console.log("Submitted product:", values);
+        const newProduct: Product = {
+          id: crypto.randomUUID(),
+          name: values.name,
+          sku: values.sku,
+          category: values.category,
+          price: Number(values.price),
+          stockQuantity: Number(values.stockQuantity),
+        };
+
+        onAddProduct(newProduct);
       }}
     >
       <Form>

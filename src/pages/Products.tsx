@@ -1,8 +1,9 @@
 import type { Product } from "../utils/types";
 import ProductForm from "../components/ProductForm";
+import { useState } from "react";
 
 const Products = () => {
-  const products: Product[] = [
+  const [products, setProducts] = useState<Product[]>([
     {
       id: "1",
       name: "Cement",
@@ -19,14 +20,18 @@ const Products = () => {
       price: 1200,
       stockQuantity: 0,
     },
-  ];
+  ]);
+
+  const handleAddProduct = (product: Product) => {
+    setProducts((currentProducts) => [...currentProducts, product]);
+  };
 
   return (
     <div>
       <h1>Products</h1>
 
       <button>Add Product</button>
-      <ProductForm />
+      <ProductForm onAddProduct={handleAddProduct} />
       <table>
         <thead>
           <tr>
