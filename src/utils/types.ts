@@ -6,3 +6,8 @@ export type Product = {
   price: number;
   stockQuantity: number;
 };
+
+export type Category = {
+  id: string;
+  name: string;
+};
