@@ -1,4 +1,5 @@
 import type { Product } from "../utils/types";
+import ProductForm from "../components/ProductForm";
 
 const Products = () => {
   const products: Product[] = [
@@ -25,7 +26,7 @@ const Products = () => {
       <h1>Products</h1>
 
       <button>Add Product</button>
-
+      <ProductForm />
       <table>
         <thead>
           <tr>
