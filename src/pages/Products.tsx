@@ -3,6 +3,12 @@ import ProductForm from "../components/ProductForm";
 import { useEffect, useState } from "react";
 import { getProducts, saveProducts } from "../utils/storage";
 import { getCategories } from "../utils/categoryStorage";
+import StockForm from "../components/StockForm";
+
+type StockAction = {
+  product: Product;
+  mode: "increase" | "decrease";
+};
 
 const Products = () => {
   const [products, setProducts] = useState<Product[]>(() => {
@@ -38,10 +44,9 @@ const Products = () => {
   });
 
   const [searchTerm, setSearchTerm] = useState("");
-
   const [selectedCategory, setSelectedCategory] = useState("all");
-
   const [stockStatus, setStockStatus] = useState("all");
+  const [stockAction, setStockAction] = useState<StockAction | null>(null);
 
   useEffect(() => {
     saveProducts(products);
@@ -80,6 +85,34 @@ const Products = () => {
     setProducts((currentProducts) =>
       currentProducts.filter((product) => product.id !== productId),
     );
+  };
+
+  const handleStockUpdate = (quantity: number) => {
+    if (!stockAction) {
+      return;
+    }
+
+    const { product, mode } = stockAction;
+
+    setProducts((currentProducts) =>
+      currentProducts.map((currentProduct) => {
+        if (currentProduct.id !== product.id) {
+          return currentProduct;
+        }
+
+        const newStock =
+          mode === "increase"
+            ? currentProduct.stockQuantity + quantity
+            : currentProduct.stockQuantity - quantity;
+
+        return {
+          ...currentProduct,
+          stockQuantity: newStock,
+        };
+      }),
+    );
+
+    setStockAction(null);
   };
 
   const filteredProducts = products.filter((product) => {
@@ -135,6 +168,14 @@ const Products = () => {
         </select>
       </div>
       <button onClick={() => setShowForm(true)}>Add Product</button>
+      {stockAction && (
+        <StockForm
+          mode={stockAction.mode}
+          currentStock={stockAction.product.stockQuantity}
+          onSubmitStock={handleStockUpdate}
+          onCancel={() => setStockAction(null)}
+        />
+      )}
       {showForm && (
         <ProductForm
           onAddProduct={handleAddProduct}
@@ -147,6 +188,7 @@ const Products = () => {
           categories={categories}
         />
       )}
+
       <table>
         <thead>
           <tr>
@@ -172,6 +214,28 @@ const Products = () => {
 
                 <button onClick={() => handleDeleteProduct(product.id)}>
                   Delete
+                </button>
+
+                <button
+                  onClick={() =>
+                    setStockAction({
+                      product,
+                      mode: "increase",
+                    })
+                  }
+                >
+                  + Restock
+                </button>
+
+                <button
+                  onClick={() =>
+                    setStockAction({
+                      product,
+                      mode: "decrease",
+                    })
+                  }
+                >
+                  - Remove Stock
                 </button>
               </td>
             </tr>
