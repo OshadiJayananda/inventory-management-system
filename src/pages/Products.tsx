@@ -31,6 +31,7 @@ const Products = () => {
     ];
   });
   const [showForm, setShowForm] = useState(false);
+  const [productToEdit, setProductToEdit] = useState<Product | null>(null);
 
   useEffect(() => {
     saveProducts(products);
@@ -42,6 +43,34 @@ const Products = () => {
     setShowForm(false);
   };
 
+  const handleEditProduct = (product: Product) => {
+    setProductToEdit(product);
+    setShowForm(true);
+  };
+  const handleUpdateProduct = (updatedProduct: Product) => {
+    setProducts((currentProducts) =>
+      currentProducts.map((product) =>
+        product.id === updatedProduct.id ? updatedProduct : product,
+      ),
+    );
+
+    setProductToEdit(null);
+    setShowForm(false);
+  };
+
+  const handleDeleteProduct = (productId: string) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this product?",
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    setProducts((currentProducts) =>
+      currentProducts.filter((product) => product.id !== productId),
+    );
+  };
   return (
     <div>
       <h1>Products</h1>
@@ -50,7 +79,12 @@ const Products = () => {
       {showForm && (
         <ProductForm
           onAddProduct={handleAddProduct}
-          onCancel={() => setShowForm(false)}
+          onUpdateProduct={handleUpdateProduct}
+          onCancel={() => {
+            setShowForm(false);
+            setProductToEdit(null);
+          }}
+          productToEdit={productToEdit}
         />
       )}
       <table>
@@ -61,6 +95,7 @@ const Products = () => {
             <th>Category</th>
             <th>Price</th>
             <th>Stock Quantity</th>
+            <th>Actions</th>
           </tr>
         </thead>
 
@@ -72,6 +107,13 @@ const Products = () => {
               <td>{product.category}</td>
               <td>{product.price}</td>
               <td>{product.stockQuantity}</td>
+              <td>
+                <button onClick={() => handleEditProduct(product)}>Edit</button>
+
+                <button onClick={() => handleDeleteProduct(product.id)}>
+                  Delete
+                </button>
+              </td>
             </tr>
           ))}
         </tbody>

@@ -4,7 +4,9 @@ import type { Product } from "../utils/types";
 
 type ProductFormProps = {
   onAddProduct: (product: Product) => void;
+  onUpdateProduct: (product: Product) => void;
   onCancel: () => void;
+  productToEdit?: Product | null;
 };
 
 type ProductFormValues = {
@@ -15,12 +17,26 @@ type ProductFormValues = {
   stockQuantity: number | "";
 };
 
-const initialValues: ProductFormValues = {
-  name: "",
-  sku: "",
-  category: "",
-  price: "",
-  stockQuantity: "",
+const getInitialValues = (
+  productToEdit?: Product | null,
+): ProductFormValues => {
+  if (productToEdit) {
+    return {
+      name: productToEdit.name,
+      sku: productToEdit.sku,
+      category: productToEdit.category,
+      price: productToEdit.price,
+      stockQuantity: productToEdit.stockQuantity,
+    };
+  }
+
+  return {
+    name: "",
+    sku: "",
+    category: "",
+    price: "",
+    stockQuantity: "",
+  };
 };
 
 const validationSchema = Yup.object({
@@ -43,14 +59,21 @@ const validationSchema = Yup.object({
     .required("Stock quantity is required"),
 });
 
-const ProductForm = ({ onAddProduct, onCancel }: ProductFormProps) => {
+const ProductForm = ({
+  onAddProduct,
+  onUpdateProduct,
+  onCancel,
+  productToEdit,
+}: ProductFormProps) => {
   return (
     <Formik
-      initialValues={initialValues}
+      enableReinitialize
+      initialValues={getInitialValues(productToEdit)}
       validationSchema={validationSchema}
       onSubmit={(values) => {
-        const newProduct: Product = {
-          id: crypto.randomUUID(),
+        const product: Product = {
+          id: productToEdit ? productToEdit.id : crypto.randomUUID(),
+
           name: values.name,
           sku: values.sku,
           category: values.category,
@@ -58,7 +81,11 @@ const ProductForm = ({ onAddProduct, onCancel }: ProductFormProps) => {
           stockQuantity: Number(values.stockQuantity),
         };
 
-        onAddProduct(newProduct);
+        if (productToEdit) {
+          onUpdateProduct(product);
+        } else {
+          onAddProduct(product);
+        }
       }}
     >
       <Form>
