@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
-
 import CategoryForm from "../components/CategoryForm";
-
 import type { Category } from "../utils/types";
-
 import { getCategories, saveCategories } from "../utils/categoryStorage";
+import Navigation from "../components/Navigation";
 
 const Categories = () => {
   const [categories, setCategories] = useState<Category[]>(() => {
@@ -50,6 +48,7 @@ const Categories = () => {
 
   return (
     <div>
+      <Navigation />
       <h1>Categories</h1>
 
       <button onClick={() => setShowForm(true)}>Add Category</button>

@@ -1,9 +1,8 @@
 import { useState } from "react";
-
 import type { Category, Product } from "../utils/types";
-
 import { getProducts } from "../utils/storage";
 import { getCategories } from "../utils/categoryStorage";
+import Navigation from "../components/Navigation";
 
 const Dashboard = () => {
   const [products] = useState<Product[]>(() => {
@@ -35,6 +34,7 @@ const Dashboard = () => {
 
   return (
     <div>
+      <Navigation />
       <h1>Dashboard</h1>
 
       <div>
