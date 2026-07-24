@@ -1,7 +1,7 @@
-import Categories from "./pages/Categories";
+import Products from "./pages/Products";
 
 function App() {
-  return <Categories />;
+  return <Products />;
 }
 
 export default App;

@@ -1,7 +1,8 @@
-import type { Product } from "../utils/types";
+import type { Category, Product } from "../utils/types";
 import ProductForm from "../components/ProductForm";
 import { useEffect, useState } from "react";
 import { getProducts, saveProducts } from "../utils/storage";
+import { getCategories } from "../utils/categoryStorage";
 
 const Products = () => {
   const [products, setProducts] = useState<Product[]>(() => {
@@ -32,6 +33,15 @@ const Products = () => {
   });
   const [showForm, setShowForm] = useState(false);
   const [productToEdit, setProductToEdit] = useState<Product | null>(null);
+  const [categories] = useState<Category[]>(() => {
+    return getCategories();
+  });
+
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const [selectedCategory, setSelectedCategory] = useState("all");
+
+  const [stockStatus, setStockStatus] = useState("all");
 
   useEffect(() => {
     saveProducts(products);
@@ -71,10 +81,59 @@ const Products = () => {
       currentProducts.filter((product) => product.id !== productId),
     );
   };
+
+  const filteredProducts = products.filter((product) => {
+    const searchValue = searchTerm.toLowerCase().trim();
+
+    const matchesSearch =
+      product.name.toLowerCase().includes(searchValue) ||
+      product.sku.toLowerCase().includes(searchValue);
+
+    const matchesCategory =
+      selectedCategory === "all" || product.category === selectedCategory;
+
+    const matchesStockStatus =
+      stockStatus === "all" ||
+      (stockStatus === "in-stock" && product.stockQuantity > 0) ||
+      (stockStatus === "out-of-stock" && product.stockQuantity === 0);
+
+    return matchesSearch && matchesCategory && matchesStockStatus;
+  });
   return (
     <div>
       <h1>Products</h1>
+      <div>
+        <input
+          type="text"
+          placeholder="Search by product name or SKU"
+          value={searchTerm}
+          onChange={(event) => setSearchTerm(event.target.value)}
+        />
 
+        <select
+          value={selectedCategory}
+          onChange={(event) => setSelectedCategory(event.target.value)}
+        >
+          <option value="all">All Categories</option>
+
+          {categories.map((category) => (
+            <option key={category.id} value={category.name}>
+              {category.name}
+            </option>
+          ))}
+        </select>
+
+        <select
+          value={stockStatus}
+          onChange={(event) => setStockStatus(event.target.value)}
+        >
+          <option value="all">All Stock Status</option>
+
+          <option value="in-stock">In Stock</option>
+
+          <option value="out-of-stock">Out of Stock</option>
+        </select>
+      </div>
       <button onClick={() => setShowForm(true)}>Add Product</button>
       {showForm && (
         <ProductForm
@@ -85,6 +144,7 @@ const Products = () => {
             setProductToEdit(null);
           }}
           productToEdit={productToEdit}
+          categories={categories}
         />
       )}
       <table>
@@ -100,7 +160,7 @@ const Products = () => {
         </thead>
 
         <tbody>
-          {products.map((product) => (
+          {filteredProducts.map((product) => (
             <tr key={product.id}>
               <td>{product.name}</td>
               <td>{product.sku}</td>

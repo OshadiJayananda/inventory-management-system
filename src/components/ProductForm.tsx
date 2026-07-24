@@ -1,12 +1,13 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import type { Product } from "../utils/types";
+import type { Category, Product } from "../utils/types";
 
 type ProductFormProps = {
   onAddProduct: (product: Product) => void;
   onUpdateProduct: (product: Product) => void;
   onCancel: () => void;
   productToEdit?: Product | null;
+  categories: Category[];
 };
 
 type ProductFormValues = {
@@ -64,6 +65,7 @@ const ProductForm = ({
   onUpdateProduct,
   onCancel,
   productToEdit,
+  categories,
 }: ProductFormProps) => {
   return (
     <Formik
@@ -113,12 +115,15 @@ const ProductForm = ({
         <div>
           <label htmlFor="category">Category</label>
 
-          <Field
-            id="category"
-            name="category"
-            type="text"
-            placeholder="Enter category"
-          />
+          <Field as="select" id="category" name="category">
+            <option value="">Select a category</option>
+
+            {categories.map((category) => (
+              <option key={category.id} value={category.name}>
+                {category.name}
+              </option>
+            ))}
+          </Field>
 
           <ErrorMessage name="category" component="div" />
         </div>
