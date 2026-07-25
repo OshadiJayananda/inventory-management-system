@@ -178,7 +178,7 @@ This allows product data, category data, and stock history to persist even after
 
 ## Form Validation
 
-Formik for form handling and validation.
+Formik and Yup are used for form handling and validation.
 
 ### Product Form
 
