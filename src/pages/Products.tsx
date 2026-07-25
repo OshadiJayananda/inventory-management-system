@@ -1,9 +1,14 @@
-import type { Category, Product } from "../utils/types";
+import type { Category, Product, StockHistory } from "../utils/types";
 import ProductForm from "../components/ProductForm";
 import { useEffect, useState } from "react";
 import { getProducts, saveProducts } from "../utils/storage";
 import { getCategories } from "../utils/categoryStorage";
 import StockForm from "../components/StockForm";
+import { exportProductsToCsv } from "../utils/csv";
+import {
+  getStockHistory,
+  saveStockHistory,
+} from "../utils/stockHistoryStorage";
 
 type StockAction = {
   product: Product;
@@ -19,15 +24,21 @@ const Products = () => {
   const [categories] = useState<Category[]>(() => {
     return getCategories();
   });
-
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [stockStatus, setStockStatus] = useState("all");
   const [stockAction, setStockAction] = useState<StockAction | null>(null);
+  const [stockHistory, setStockHistory] = useState<StockHistory[]>(() => {
+    return getStockHistory();
+  });
 
   useEffect(() => {
     saveProducts(products);
   }, [products]);
+
+  useEffect(() => {
+    saveStockHistory(stockHistory);
+  }, [stockHistory]);
 
   const handleAddProduct = (product: Product) => {
     setProducts((currentProducts) => [...currentProducts, product]);
@@ -80,7 +91,7 @@ const Products = () => {
         const newStock =
           mode === "increase"
             ? currentProduct.stockQuantity + quantity
-            : Math.max(0, currentProduct.stockQuantity - quantity);
+            : currentProduct.stockQuantity - quantity;
 
         return {
           ...currentProduct,
@@ -88,6 +99,17 @@ const Products = () => {
         };
       }),
     );
+
+    const newHistoryRecord: StockHistory = {
+      id: crypto.randomUUID(),
+      productId: product.id,
+      productName: product.name,
+      type: mode,
+      quantity,
+      timestamp: new Date().toISOString(),
+    };
+
+    setStockHistory((currentHistory) => [newHistoryRecord, ...currentHistory]);
 
     setStockAction(null);
   };
@@ -109,6 +131,7 @@ const Products = () => {
 
     return matchesSearch && matchesCategory && matchesStockStatus;
   });
+
   return (
     <div className="space-y-8">
       {/* Page Header */}
@@ -121,12 +144,21 @@ const Products = () => {
           </p>
         </div>
 
-        <button
-          onClick={() => setShowForm(true)}
-          className="rounded-lg bg-gray-900 px-5 py-3 font-medium text-white transition hover:bg-gray-700"
-        >
-          + Add Product
-        </button>
+        <div className="flex flex-col gap-3 sm:flex-row">
+          <button
+            onClick={() => exportProductsToCsv(products)}
+            className="rounded-lg border border-gray-300 bg-white px-5 py-3 font-medium text-gray-700 transition hover:bg-gray-50"
+          >
+            Export CSV
+          </button>
+
+          <button
+            onClick={() => setShowForm(true)}
+            className="rounded-lg bg-gray-900 px-5 py-3 font-medium text-white transition hover:bg-gray-700"
+          >
+            + Add Product
+          </button>
+        </div>
       </div>
 
       {/* Stock Form */}

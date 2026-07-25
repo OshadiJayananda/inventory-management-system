@@ -1,6 +1,7 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import type { Category, Product } from "../utils/types";
+import { generateSku } from "../utils/sku";
 
 type ProductFormProps = {
   onAddProduct: (product: Product) => void;
@@ -33,7 +34,7 @@ const getInitialValues = (
 
   return {
     name: "",
-    sku: "",
+    sku: generateSku(),
     category: "",
     price: "",
     stockQuantity: "",
@@ -137,23 +138,25 @@ const ProductForm = ({
 
             {/* SKU */}
             <div>
-              <label
-                htmlFor="sku"
-                className="mb-2 block text-sm font-medium text-gray-700"
-              >
-                SKU
-              </label>
+              <div className="mb-2 flex items-center justify-between">
+                <label
+                  htmlFor="sku"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  SKU
+                </label>
+
+                <span className="rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-500">
+                  Auto-generated
+                </span>
+              </div>
 
               <Field
                 id="sku"
                 name="sku"
                 type="text"
-                placeholder="Enter SKU"
-                className={`w-full rounded-lg border px-4 py-2.5 uppercase outline-none transition focus:ring-1 ${
-                  errors.sku && touched.sku
-                    ? "border-red-500 focus:border-red-500 focus:ring-red-500"
-                    : "border-gray-300 focus:border-gray-900 focus:ring-gray-900"
-                }`}
+                readOnly
+                className="w-full cursor-not-allowed rounded-lg border border-gray-200 bg-gray-50 px-4 py-2.5 font-mono text-sm font-medium tracking-wide text-gray-600 outline-none"
               />
 
               <ErrorMessage

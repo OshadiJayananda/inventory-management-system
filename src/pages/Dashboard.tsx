@@ -1,9 +1,8 @@
 import { useState } from "react";
-
 import type { Category, Product } from "../utils/types";
-
 import { getProducts } from "../utils/storage";
 import { getCategories } from "../utils/categoryStorage";
+import CategoryChart from "../components/CategoryChart";
 
 const Dashboard = () => {
   const [products] = useState<Product[]>(() => {
@@ -28,6 +27,16 @@ const Dashboard = () => {
     (product) => product.stockQuantity === 0,
   ).length;
 
+  const categoryChartData = categories.map((category) => {
+    const productCount = products.filter(
+      (product) => product.category === category.name,
+    ).length;
+
+    return {
+      category: category.name,
+      productCount,
+    };
+  });
   const getProductCountByCategory = (categoryName: string) => {
     return products.filter((product) => product.category === categoryName)
       .length;
@@ -80,6 +89,9 @@ const Dashboard = () => {
           </p>
         </div>
       </div>
+
+      {/* Category Analytics Chart */}
+      {categories.length > 0 && <CategoryChart data={categoryChartData} />}
 
       {/* Category Overview */}
       <div className="rounded-xl bg-white p-6 shadow-sm">
