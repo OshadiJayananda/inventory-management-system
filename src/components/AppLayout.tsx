@@ -1,10 +1,22 @@
-import { useState } from "react";
-import { Outlet } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Outlet, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import Navigation from "./Navigation";
 
 const AppLayout = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    const pageTitles: Record<string, string> = {
+      "/dashboard": "Dashboard",
+      "/products": "Products",
+      "/stock-history": "Stock History",
+      "/categories": "Categories",
+    };
+
+    document.title = `${pageTitles[pathname] ?? "Inventory"} | Inventory Management`;
+  }, [pathname]);
 
   return (
     <div className="min-h-screen bg-gray-100">
