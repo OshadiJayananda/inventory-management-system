@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import CategoryForm from "../components/CategoryForm";
 import type { Category } from "../utils/types";
 import { getCategories, saveCategories } from "../utils/categoryStorage";
+import { getProducts } from "../utils/storage";
 
 const Categories = () => {
   const [categories, setCategories] = useState<Category[]>(() => {
@@ -32,6 +33,24 @@ const Categories = () => {
   };
 
   const handleDeleteCategory = (categoryId: string) => {
+    const products = getProducts();
+
+    const categoryName = categories.find(
+      (category) => category.id === categoryId,
+    )?.name;
+
+    const categoryInUse = products.some(
+      (product) => product.category === categoryName,
+    );
+
+    if (categoryInUse) {
+      alert(
+        "This category cannot be deleted because it is currently assigned to one or more products.",
+      );
+
+      return;
+    }
+
     const confirmed = window.confirm(
       "Are you sure you want to delete this category?",
     );
