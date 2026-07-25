@@ -1,24 +1,59 @@
+import { useState } from "react";
 import { Outlet } from "react-router-dom";
+import { Menu, X } from "lucide-react";
 import Navigation from "./Navigation";
 
 const AppLayout = () => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-gray-100">
       <div className="flex min-h-screen">
-        <aside className="w-64 bg-gray-900 p-6 text-white">
+        {isMobileMenuOpen && (
+          <button
+            type="button"
+            className="fixed inset-0 z-30 bg-black/50 lg:hidden"
+            aria-label="Close navigation menu"
+            onClick={() => setIsMobileMenuOpen(false)}
+          />
+        )}
+
+        <aside
+          className={`fixed inset-y-0 left-0 z-40 w-64 transform bg-gray-900 p-6 text-white transition-transform duration-200 lg:static lg:translate-x-0 ${
+            isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
+          aria-label="Main navigation"
+        >
+          <button
+            type="button"
+            className="absolute right-4 top-4 rounded p-1 text-gray-300 hover:bg-gray-800 hover:text-white lg:hidden"
+            aria-label="Close navigation menu"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            <X size={24} />
+          </button>
           <h1 className="mb-8 text-2xl font-bold">Inventory</h1>
 
-          <Navigation />
+          <Navigation onNavigate={() => setIsMobileMenuOpen(false)} />
         </aside>
 
-        <main className="flex-1">
-          <header className="border-b bg-white px-8 py-4">
+        <main className="min-w-0 flex-1">
+          <header className="sticky top-0 z-20 flex items-center gap-4 border-b bg-white px-4 py-4 sm:px-8">
+            <button
+              type="button"
+              className="rounded p-1 text-gray-700 hover:bg-gray-100 lg:hidden"
+              aria-label="Open navigation menu"
+              aria-expanded={isMobileMenuOpen}
+              onClick={() => setIsMobileMenuOpen(true)}
+            >
+              <Menu size={26} />
+            </button>
             <h2 className="text-xl font-semibold text-gray-800">
               Inventory Management System
             </h2>
           </header>
 
-          <section className="p-8">
+          <section className="p-4 sm:p-8">
             <Outlet />
           </section>
         </main>
