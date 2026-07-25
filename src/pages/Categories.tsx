@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import CategoryForm from "../components/CategoryForm";
+import ConfirmationDialog from "../components/ConfirmationDialog";
 import type { Category } from "../utils/types";
 import { getCategories, saveCategories } from "../utils/categoryStorage";
 import { getProducts } from "../utils/storage";
@@ -11,6 +12,7 @@ const Categories = () => {
   });
 
   const [showForm, setShowForm] = useState(false);
+  const [categoryToDelete, setCategoryToDelete] = useState<string | null>(null);
 
   useEffect(() => {
     saveCategories(categories);
@@ -53,17 +55,18 @@ const Categories = () => {
       return;
     }
 
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this category?",
-    );
+    setCategoryToDelete(categoryId);
+  };
 
-    if (!confirmed) {
+  const confirmDeleteCategory = () => {
+    if (!categoryToDelete) {
       return;
     }
 
     setCategories((currentCategories) =>
-      currentCategories.filter((category) => category.id !== categoryId),
+      currentCategories.filter((category) => category.id !== categoryToDelete),
     );
+    setCategoryToDelete(null);
     toast.success("Category deleted successfully.");
   };
   return (
@@ -137,6 +140,15 @@ const Categories = () => {
           </div>
         )}
       </div>
+
+      <ConfirmationDialog
+        isOpen={categoryToDelete !== null}
+        title="Delete category?"
+        message="Are you sure you want to delete this category? This action cannot be undone."
+        confirmLabel="Delete category"
+        onConfirm={confirmDeleteCategory}
+        onCancel={() => setCategoryToDelete(null)}
+      />
     </div>
   );
 };

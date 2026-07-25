@@ -1,4 +1,5 @@
 import type { Category, Product, StockHistory } from "../utils/types";
+import ConfirmationDialog from "../components/ConfirmationDialog";
 import ProductForm from "../components/ProductForm";
 import { useEffect, useState } from "react";
 import { getProducts, saveProducts } from "../utils/storage";
@@ -22,6 +23,7 @@ const Products = () => {
   });
   const [showForm, setShowForm] = useState(false);
   const [productToEdit, setProductToEdit] = useState<Product | null>(null);
+  const [productToDelete, setProductToDelete] = useState<string | null>(null);
   const [categories] = useState<Category[]>(() => {
     return getCategories();
   });
@@ -67,18 +69,19 @@ const Products = () => {
   };
 
   const handleDeleteProduct = (productId: string) => {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this product?",
-    );
+    setProductToDelete(productId);
+  };
 
-    if (!confirmed) {
+  const confirmDeleteProduct = () => {
+    if (!productToDelete) {
       return;
     }
 
     setProducts((currentProducts) =>
-      currentProducts.filter((product) => product.id !== productId),
+      currentProducts.filter((product) => product.id !== productToDelete),
     );
 
+    setProductToDelete(null);
     toast.success("Product deleted successfully.");
   };
 
@@ -379,6 +382,15 @@ const Products = () => {
           </div>
         )}
       </div>
+
+      <ConfirmationDialog
+        isOpen={productToDelete !== null}
+        title="Delete product?"
+        message="Are you sure you want to delete this product? This action cannot be undone."
+        confirmLabel="Delete product"
+        onConfirm={confirmDeleteProduct}
+        onCancel={() => setProductToDelete(null)}
+      />
     </div>
   );
 };
