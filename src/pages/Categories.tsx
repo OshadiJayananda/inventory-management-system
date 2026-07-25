@@ -3,6 +3,7 @@ import CategoryForm from "../components/CategoryForm";
 import type { Category } from "../utils/types";
 import { getCategories, saveCategories } from "../utils/categoryStorage";
 import { getProducts } from "../utils/storage";
+import toast from "react-hot-toast";
 
 const Categories = () => {
   const [categories, setCategories] = useState<Category[]>(() => {
@@ -22,7 +23,7 @@ const Categories = () => {
     );
 
     if (categoryAlreadyExists) {
-      alert("A category with this name already exists.");
+      toast.error("A category with this name already exists.");
 
       return;
     }
@@ -30,6 +31,7 @@ const Categories = () => {
     setCategories((currentCategories) => [...currentCategories, category]);
 
     setShowForm(false);
+    toast.success("Category created successfully.");
   };
 
   const handleDeleteCategory = (categoryId: string) => {
@@ -44,7 +46,7 @@ const Categories = () => {
     );
 
     if (categoryInUse) {
-      alert(
+      toast.error(
         "This category cannot be deleted because it is currently assigned to one or more products.",
       );
 
@@ -62,6 +64,7 @@ const Categories = () => {
     setCategories((currentCategories) =>
       currentCategories.filter((category) => category.id !== categoryId),
     );
+    toast.success("Category deleted successfully.");
   };
   return (
     <div className="space-y-8">

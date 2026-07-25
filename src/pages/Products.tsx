@@ -9,6 +9,7 @@ import {
   getStockHistory,
   saveStockHistory,
 } from "../utils/stockHistoryStorage";
+import toast from "react-hot-toast";
 
 type StockAction = {
   product: Product;
@@ -44,6 +45,8 @@ const Products = () => {
     setProducts((currentProducts) => [...currentProducts, product]);
 
     setShowForm(false);
+
+    toast.success("Product created successfully.");
   };
 
   const handleEditProduct = (product: Product) => {
@@ -59,6 +62,8 @@ const Products = () => {
 
     setProductToEdit(null);
     setShowForm(false);
+
+    toast.success("Product updated successfully.");
   };
 
   const handleDeleteProduct = (productId: string) => {
@@ -73,6 +78,8 @@ const Products = () => {
     setProducts((currentProducts) =>
       currentProducts.filter((product) => product.id !== productId),
     );
+
+    toast.success("Product deleted successfully.");
   };
 
   const handleStockUpdate = (quantity: number) => {
@@ -110,6 +117,12 @@ const Products = () => {
     };
 
     setStockHistory((currentHistory) => [newHistoryRecord, ...currentHistory]);
+
+    toast.success(
+      mode === "increase"
+        ? "Stock increased successfully."
+        : "Stock decreased successfully.",
+    );
 
     setStockAction(null);
   };
