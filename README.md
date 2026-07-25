@@ -1,76 +1,244 @@
-# React + TypeScript + Vite
+# Inventory Management System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A frontend-only Inventory Management System built with React and TypeScript. The application allows users to manage products, categories, stock levels, inventory statistics, and stock movement history.
 
-Currently, two official plugins are available:
+All application data is persisted using the browser's `localStorage`, so no backend or database is required.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Product Management
 
-## Expanding the ESLint configuration
+- Add new products
+- Edit existing products
+- Delete products
+- Automatically generate unique SKUs
+- Store product name, SKU, category, price, and stock quantity
+- Form validation using Formik and Yup
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Stock Management
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Increase stock quantity through restocking
+- Decrease stock quantity through outgoing stock
+- Prevent stock quantity from becoming negative
+- Validate stock movement quantities
+- Record every stock movement in stock history
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Category Management
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- Create custom categories
+- Delete categories
+- Prevent deletion of categories currently assigned to products
+- Filter products by category
+- Display product counts by category on the dashboard
 
+### Search and Filtering
+
+- Search products by name
+- Search products by SKU
+- Filter products by category
+- Filter products by stock status:
+  - In Stock
+  - Out of Stock
+
+### Dashboard and Statistics
+
+The dashboard provides an overview of the inventory, including:
+
+- Total number of products
+- Total inventory value
+- Total stock quantity
+- Number of out-of-stock products
+- Product count by category
+- Category distribution analytics chart
+
+### Stock History
+
+- Record stock increases and decreases
+- Store the product name and product ID
+- Store the quantity changed
+- Store the timestamp of each stock movement
+- Display the newest stock movements first
+
+### CSV Export
+
+- Export the full product list as a CSV file
+- Include product name, SKU, category, price, and stock quantity
+- Properly handle CSV values containing commas and quotation marks
+
+---
+
+## Tech Stack
+
+- React
+- TypeScript
+- Vite
+- React Router
+- Formik
+- Tailwind CSS
+- Recharts
+- Browser localStorage
+
+---
+
+## Project Structure
+
+```text
+src/
+├── components/
+│   ├── AppLayout.tsx
+│   ├── CategoryChart.tsx
+|   ├── CategoryForm.tsx
+|   ├── Navigation.tsx
+│   ├── ProductForm.tsx
+│   └── StockForm.tsx
+│
+├── pages/
+│   ├── Dashboard.tsx
+│   ├── Products.tsx
+│   ├── Categories.tsx
+│   └── StockHistory.tsx
+│
+├── utils/
+│   ├── categoryStorage.ts
+│   ├── stockHistoryStorage.ts
+│   ├── storage.ts
+│   ├── sku.ts
+|   ├── csv.ts
+│   └── types.ts
+│
+├── App.tsx
+├── main.tsx
+├── index.css
+└── vite-env.d.ts
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Getting Started
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Prerequisites
 
+Make sure you have the following installed:
+
+- npm
+
+### Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/OshadiJayananda/inventory-management-system
 ```
-"# inventory-management-system" 
+
+Navigate to the project directory:
+
+```bash
+cd inventory-management-system
+```
+
+Install the dependencies:
+
+```bash
+npm install
+```
+
+### Run the Development Server
+
+```bash
+npm run dev
+```
+
+Open the local URL displayed in the terminal, usually:
+
+```text
+http://localhost:5173
+```
+
+---
+
+## Data Persistence
+
+This is a frontend-only application.
+
+No backend or database is used. Application data is stored in the browser using `localStorage`.
+
+The application uses separate storage keys for different types of data:
+
+```text
+inventory_products
+inventory_categories
+inventory_stock_history
+```
+
+This allows product data, category data, and stock history to persist even after refreshing the browser.
+
+---
+
+## Form Validation
+
+Formik for form handling and validation.
+
+### Product Form
+
+- Product name is required
+- Product name must meet the minimum length requirement
+- SKU is required
+- Category is required
+- Price must be a valid positive number
+- Stock quantity cannot be negative
+
+### Category Form
+
+- Category name is required
+- Category name must meet the minimum length requirement
+- Category name cannot exceed the maximum length requirement
+
+### Stock Form
+
+- Quantity is required
+- Quantity must be a whole number
+- Quantity must be greater than zero
+- Stock cannot be decreased below zero
+
+---
+
+## Application Routes
+
+| Route            | Description                             |
+| ---------------- | --------------------------------------- |
+| `/dashboard`     | View inventory statistics and analytics |
+| `/products`      | Manage products and stock               |
+| `/categories`    | Manage inventory categories             |
+| `/stock-history` | View stock movement history             |
+
+---
+
+## Screenshots
+
+### Dashboard
+
+![Dashboard](./screenshots/dashboard.png)
+
+### Products
+
+![Products](./screenshots/products.png)
+
+### Product Form
+
+![Product Form](./screenshots/product-form.png)
+
+### Categories
+
+![Categories](./screenshots/categories.png)
+
+### Stock History
+
+![Stock History](./screenshots/stock-history.png)
+
+---
+
+## Author
+
+Oshadi Jayananda
