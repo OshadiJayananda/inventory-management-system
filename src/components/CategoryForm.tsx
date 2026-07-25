@@ -38,26 +38,63 @@ const CategoryForm = ({ onAddCategory, onCancel }: CategoryFormProps) => {
         resetForm();
       }}
     >
-      <Form>
-        <div>
-          <label htmlFor="name">Category Name</label>
+      {({ errors, touched }) => (
+        <Form className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold text-gray-900">
+              Add New Category
+            </h2>
 
-          <Field
-            id="name"
-            name="name"
-            type="text"
-            placeholder="Enter category name"
-          />
+            <p className="mt-1 text-sm text-gray-500">
+              Create a category for organizing your products.
+            </p>
+          </div>
 
-          <ErrorMessage name="name" component="div" />
-        </div>
+          <div className="space-y-2">
+            <label
+              htmlFor="name"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Category Name
+            </label>
 
-        <button type="submit">Save Category</button>
+            <Field
+              id="name"
+              name="name"
+              type="text"
+              placeholder="Enter category name"
+              className={`w-full rounded-lg border px-4 py-2.5 outline-none transition focus:ring-1 ${
+                errors.name && touched.name
+                  ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                  : "border-gray-300 focus:border-gray-900 focus:ring-gray-900"
+              }`}
+            />
 
-        <button type="button" onClick={onCancel}>
-          Cancel
-        </button>
-      </Form>
+            <ErrorMessage
+              name="name"
+              component="p"
+              className="text-sm text-red-600"
+            />
+          </div>
+
+          <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+            <button
+              type="button"
+              onClick={onCancel}
+              className="rounded-lg border border-gray-300 px-5 py-2.5 font-medium text-gray-700 transition hover:bg-gray-50"
+            >
+              Cancel
+            </button>
+
+            <button
+              type="submit"
+              className="rounded-lg bg-gray-900 px-5 py-2.5 font-medium text-white transition hover:bg-gray-700"
+            >
+              Save Category
+            </button>
+          </div>
+        </Form>
+      )}
     </Formik>
   );
 };
