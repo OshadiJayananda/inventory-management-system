@@ -19,7 +19,7 @@ const AppLayout = () => {
         )}
 
         <aside
-          className={`fixed inset-y-0 left-0 z-40 w-64 transform bg-gray-900 p-6 text-white transition-transform duration-200 lg:static lg:translate-x-0 ${
+          className={`fixed inset-y-0 left-0 z-40 w-64 transform overflow-y-auto bg-gray-900 p-6 text-white transition-transform duration-200 lg:translate-x-0 ${
             isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
           }`}
           aria-label="Main navigation"
@@ -37,7 +37,7 @@ const AppLayout = () => {
           <Navigation onNavigate={() => setIsMobileMenuOpen(false)} />
         </aside>
 
-        <main className="min-w-0 flex-1">
+        <main className="min-w-0 flex-1 lg:ml-64">
           <header className="sticky top-0 z-20 flex items-center gap-4 border-b bg-white px-4 py-4 sm:px-8">
             <button
               type="button"
