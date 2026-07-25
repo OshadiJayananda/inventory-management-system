@@ -67,6 +67,13 @@ The dashboard provides an overview of the inventory, including:
 - Include product name, SKU, category, price, and stock quantity
 - Properly handle CSV values containing commas and quotation marks
 
+### User Feedback Notifications
+
+- Implemented toast notifications using `react-hot-toast`
+- Displays success messages when products and categories are created, updated, deleted, or stock is modified
+- Displays error messages for invalid actions, such as attempting to delete a category that is currently assigned to products
+- Uses confirmation dialogs for destructive actions before deletion
+
 ---
 
 ## Tech Stack
@@ -76,9 +83,12 @@ The dashboard provides an overview of the inventory, including:
 - Vite
 - React Router
 - Formik
+- Yup
 - Tailwind CSS
 - Recharts
 - Browser localStorage
+- React Hot Toast
+- Vercel
 
 ---
 
@@ -236,6 +246,14 @@ Formik and Yup are used for form handling and validation.
 ### Stock History
 
 ![Stock History](./screenshots/stock-history.png)
+
+### csv File
+
+![csv File](./screenshots/csv-file.png)
+
+### Product Validation
+
+![Product Validation](./screenshots/product-validation.png)
 
 ---
 
