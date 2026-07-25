@@ -19,6 +19,10 @@ const Navigation = () => {
         Products
       </NavLink>
 
+      <NavLink to="/stock-history" className={getLinkClassName}>
+        Stock History
+      </NavLink>
+
       <NavLink to="/categories" className={getLinkClassName}>
         Categories
       </NavLink>

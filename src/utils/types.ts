@@ -11,3 +11,12 @@ export type Category = {
   id: string;
   name: string;
 };
+
+export type StockHistory = {
+  id: string;
+  productId: string;
+  productName: string;
+  type: "increase" | "decrease";
+  quantity: number;
+  timestamp: string;
+};
