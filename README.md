@@ -266,3 +266,7 @@ Oshadi Jayananda
 Watch the application demonstration:
 
 https://drive.google.com/file/d/1gSVSVoHmAmVbPGWS5zqI86CEHCakS2ny/view?usp=sharing
+
+## Deployment Link
+
+https://inventory-management-system-eta-lyart.vercel.app/dashboard
